@@ -1,5 +1,5 @@
 from pygame.math import Vector2
-from utils import load_sprite
+from utils import load_sprite, wrap_position
 from pygame.transform import rotozoom     # responsible for scaling and rotating images:
 
 # Remember that Pygame’s y-axis goes from top to bottom, so a negative value actually points upwards:
@@ -31,9 +31,12 @@ class GameObject:
         surface.blit(rotated_surface, blit_position)
 
 
-    def move(self):
+    def move(self, surface):
         #  It will update the position of the game object.
-        self.position = self.position + self.velocity
+        # self.position = self.position + self.velocity     - old way of doing the position movement,
+
+        #New way is to use the new function wrap_position so we wrap around the screen
+        self.position = wrap_position(self.position + self.velocity, surface)
 
     def collides_width(self, other_obj):
         # calculate distance between 2 objects using distance_to function.
@@ -49,7 +52,8 @@ class Spaceship(GameObject):
 
 
     # this value represents an angle in degrees by which your spaceship’s direction can rotate each frame.
-    const_MANEUVERABILITY = 3
+    const_MANEUVERABILITY = 30
+    const_ACCELERATION = 0.25
 
     def __init__(self, position):
         # Make a copy of the original UP vector set as a const in the spaceship class
@@ -64,6 +68,9 @@ class Spaceship(GameObject):
 
         # rotates it in place by a given angle in degrees. - from vector2 class
         self.direction.rotate_ip(angle)
+
+    def accelerate(self):
+        self.velocity += self.direction * self.const_ACCELERATION
 
 
 class Asteroid(GameObject):
