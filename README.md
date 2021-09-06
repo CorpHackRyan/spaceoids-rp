@@ -1,3 +1,3 @@
-2nd round of practicing with Git to get commits and stuff to go correctly. 
+This was created from following the tutorial at:
 
-Also, shitty version of asteroids, woot woot. 
+https://realpython.com/asteroids-game-python
