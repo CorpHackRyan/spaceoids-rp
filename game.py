@@ -17,7 +17,8 @@ class SpaceRocks:
         self.frames_per_second = 60
 
         self.spaceship = Spaceship((400, 300))
-        self.asteroid = Asteroid((400, 300))
+        self.asteroids = [
+            Asteroid((0, 0)) for _ in range(6)]
 
     def main_loop(self):
         while True:
@@ -48,12 +49,13 @@ class SpaceRocks:
             if is_key_pressed[pygame.K_UP]:
                 self.spaceship.accelerate()
 
-
     def _process_game_logic(self):
-        self.spaceship.move(self.screen)
+        #below was the old way to move the spaceship and asteroids
+        #self.spaceship.move(self.screen)
         #self.asteroid.move()
 
-        pass
+        for game_object in self._get_game_objects():
+            game_object.move(self.screen)
 
     def _draw(self):
         # draw a blue screen ->  self.screen.fill((0, 0, 255))
@@ -63,7 +65,16 @@ class SpaceRocks:
         # 2- The point where you want to draw it
         # x and y coordinates start at the top left corner of the window
         self.screen.blit(self.background, (0, 0))
-        self.spaceship.draw(self.screen)
-        #self.asteroid.draw(self.screen)
+
+        # Old to draw single items on the screen, now we will do it with multiple objects in a loop
+        # self.spaceship.draw(self.screen)
+        # self.asteroid.draw(self.screen)
+
+        for game_object in self._get_game_objects():
+            game_object.draw(self.screen)
+
         pygame.display.flip()
         self.clock.tick(self.frames_per_second)
+
+    def _get_game_objects(self):
+        return [*self.asteroids, self.spaceship]

@@ -50,7 +50,6 @@ class Spaceship(GameObject):
     # VELOCITY is a vector describing where the spaceship moves each frame.
     # ACCELERATION is a constant number describing how fast the spaceship can speed up each frame.
 
-
     # this value represents an angle in degrees by which your spaceship’s direction can rotate each frame.
     const_MANEUVERABILITY = 30
     const_ACCELERATION = 0.25
@@ -75,5 +74,7 @@ class Spaceship(GameObject):
 
 class Asteroid(GameObject):
     def __init__(self, position):
-        super().__init__(position, load_sprite("asteroid"), Vector2(1, 0))
+        self.direction = Vector2(const_UP)
+        super().__init__(position, load_sprite("asteroid"), Vector2(0, 0))
+
 
