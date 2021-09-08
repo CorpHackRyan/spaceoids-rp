@@ -1,5 +1,5 @@
 from pygame.math import Vector2
-from utils import load_sprite, wrap_position
+from utils import get_random_velocity, load_sprite, wrap_position
 from pygame.transform import rotozoom     # responsible for scaling and rotating images:
 
 # Remember that Pygame’s y-axis goes from top to bottom, so a negative value actually points upwards:
@@ -30,17 +30,16 @@ class GameObject:
 
         surface.blit(rotated_surface, blit_position)
 
-
     def move(self, surface):
         #  It will update the position of the game object.
         # self.position = self.position + self.velocity     - old way of doing the position movement,
 
-        #New way is to use the new function wrap_position so we wrap around the screen
+        # New way is to use the new function wrap_position so we wrap around the screen
         self.position = wrap_position(self.position + self.velocity, surface)
 
     def collides_width(self, other_obj):
         # calculate distance between 2 objects using distance_to function.
-        # checks if that distance is smaller than the sum of the objects’ radiuses. If so, the objects collide.
+        # checks if that distance is smaller than the sum of the objects’ radii. If so, the objects collide.
         distance = self.position.distance_to(other_obj.position)
         return distance < self.radius + other_obj.radius
 
@@ -75,6 +74,7 @@ class Spaceship(GameObject):
 class Asteroid(GameObject):
     def __init__(self, position):
         self.direction = Vector2(const_UP)
-        super().__init__(position, load_sprite("asteroid"), Vector2(0, 0))
 
-
+        # Old way before randomly assigning velocity to asteroids
+        # super().__init__(position, load_sprite("asteroid"), Vector2(0, 0))
+        super().__init__(position, load_sprite("asteroid"), get_random_velocity(1, 3))

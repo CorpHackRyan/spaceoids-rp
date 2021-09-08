@@ -1,10 +1,13 @@
 import pygame
 import sys
-from utils import load_sprite
+from utils import load_sprite, get_random_position
 from models import Spaceship, Asteroid
 
 
 class SpaceRocks:
+    # constant representing an area that has to remain empty. 250 pixels should be enough:
+    const_MIN_ASTEROID_DISTANCE = 250
+
     def __init__(self):
         self._init_pygame()
         self.screen = pygame.display.set_mode((800, 600))
@@ -17,8 +20,23 @@ class SpaceRocks:
         self.frames_per_second = 60
 
         self.spaceship = Spaceship((400, 300))
-        self.asteroids = [
-            Asteroid((0, 0)) for _ in range(6)]
+
+        # Old way, generated the asteroids, but overlapped the space ship.
+        # self.asteroids = [
+        #    Asteroid(get_random_position(self.screen)) for _ in range(6)]
+
+        # Below will ensure that no asteroid is touching the space ship when you start
+        self.asteroids = []
+        for _ in range(6):
+            while True:
+                position = get_random_position(self.screen)
+                if (
+                    position.distance_to(self.spaceship.position)
+                    > self.const_MIN_ASTEROID_DISTANCE
+                ):
+                    break
+
+                self.asteroids.append(Asteroid(position))
 
     def main_loop(self):
         while True:
