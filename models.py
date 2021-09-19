@@ -52,13 +52,29 @@ class Spaceship(GameObject):
     # this value represents an angle in degrees by which your spaceship’s direction can rotate each frame.
     const_MANEUVERABILITY = 30
     const_ACCELERATION = 0.25
+    const_BULLET_SPEED = 3
 
-    def __init__(self, position):
+    # Adding CREATE BULLET CALLBACK to the __init__ function of the SpaceShip class and why
+    #
+    # There’s a small issue with shooting. Bullets are stored in the main game object, represented by the
+    # SpaceRocks class. However, the shooting logic should be determined by the spaceship. It’s the
+    # spaceship that knows how to create a new bullet, but it’s the game that stores and later animates
+    # the bullets. The Spaceship class needs a way to inform the SpaceRocks class that a bullet has been
+    # created and should be tracked.
+    #
+    # To fix this, you can add a callback function to the Spaceship class. That function will be
+    # provided by the SpaceRocks class when the spaceship is initialized. Every time the spaceship
+    # creates a bullet, it will initialize a Bullet object and then call the callback. The callback
+    # will add the bullet to the list of all bullets stored by the game.
+    # Start by adding a callback to the constructor of the Spaceship class
+
+    def __init__(self, position, create_bullet_callback):
+        self.create_bullet_callback = create_bullet_callback
         # Make a copy of the original UP vector set as a const in the spaceship class
         self.direction = Vector2(const_UP)
 
         # This calls the GameObject constructor with a specific image and zero velocity
-        super().__init__(position, load_sprite("spaceship"), Vector2(0, 0))
+        super().__init__(position, load_sprite("spaceship"), Vector2(0))
 
     def rotate(self, clockwise=True):
         sign = 1 if clockwise else -1
@@ -70,6 +86,20 @@ class Spaceship(GameObject):
     def accelerate(self):
         self.velocity += self.direction * self.const_ACCELERATION
 
+    def shoot(self):
+        # You start by calculating the velocity of the bullet. The bullet is always shot forward, so you use
+        # the direction of the spaceship multiplied by the speed of the bullet. Because the spaceship doesn’t
+        # necessarily stand still, you add its velocity to the velocity of the bullet. That way, you can create
+        # high-speed bullets if the spaceship is moving very fast.
+        #
+        # Then you create an instance of the Bullet class at the same location as the spaceship, using
+        # the velocity that was just calculated. Finally, the bullet is added to all the bullets in the game
+        # by using the callback method.
+
+        bullet_velocity = self.direction * self.const_BULLET_SPEED + self.velocity
+        bullet = Bullet(self.position, bullet_velocity)
+        self.create_bullet_callback(bullet)
+
 
 class Asteroid(GameObject):
     def __init__(self, position):
@@ -78,3 +108,9 @@ class Asteroid(GameObject):
         # Old way before randomly assigning velocity to asteroids
         # super().__init__(position, load_sprite("asteroid"), Vector2(0, 0))
         super().__init__(position, load_sprite("asteroid"), get_random_velocity(1, 3))
+
+
+class Bullet(GameObject):
+    def __init__(self, position, velocity):
+        super().__init__(position, load_sprite("bullet"), velocity)
+        self.direction = Vector2(const_UP)
