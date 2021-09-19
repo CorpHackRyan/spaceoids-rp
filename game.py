@@ -96,6 +96,16 @@ class SpaceRocks:
                     self.spaceship = None
                     break
 
+        # However, they also won’t be destroyed. Instead, they’ll continue flying into the infinite abyss of the
+        # cosmos. Soon, your list of bullets will contain thousands of elements, and all of them will be processed
+        # in each frame, resulting in a decline of the performance of your game.
+        #
+        # To avoid that situation, your game should remove the bullets as soon as they leave the screen
+        for bullet in self.bullets[:]:
+            if not self.screen.get_rect().collidepoint(bullet.position):
+                self.bullets.remove(bullet)
+
+
     def _draw(self):
         # draw a blue screen ->  self.screen.fill((0, 0, 255))
 

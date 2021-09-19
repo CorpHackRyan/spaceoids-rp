@@ -114,3 +114,11 @@ class Bullet(GameObject):
     def __init__(self, position, velocity):
         super().__init__(position, load_sprite("bullet"), velocity)
         self.direction = Vector2(const_UP)
+
+
+    # disabling the wrapping only for bullets. Override move()
+    # this way the bullets don't wrap to the other side of the screen
+    # also, think about if you need to kill the jobject completel.y or not
+    def move(self, surface):
+        self.position = self.position + self.velocity
+
