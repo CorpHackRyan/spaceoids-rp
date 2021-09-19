@@ -96,6 +96,19 @@ class SpaceRocks:
                     self.spaceship = None
                     break
 
+        # whenever a collision is detected between a bullet and an asteroid, both will be removed from the game.
+        # Notice that, just like before in the bullet loop, you don’t use the original lists here. Instead,
+        # you create copies using [:]
+
+        for bullet in self.bullets[:]:
+            for asteroid in self.asteroids[:]:
+                if asteroid.collides_width(bullet):
+                    self.asteroids.remove(asteroid)
+                    self.bullets.remove(bullet)
+                    break
+
+
+
         # However, they also won’t be destroyed. Instead, they’ll continue flying into the infinite abyss of the
         # cosmos. Soon, your list of bullets will contain thousands of elements, and all of them will be processed
         # in each frame, resulting in a decline of the performance of your game.
@@ -105,11 +118,19 @@ class SpaceRocks:
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)
 
+        # ^^ Notice that instead of using the original list, self.bullets, you create a copy of it using
+        # self.bullets[:] in line 11. That’s because removing elements from a list while iterating over
+        # it can cause errors.
+
+        # Surfaces in Pygame have a get_rect() method that returns a rectangle representing their area.
+        # That rectangle, in turn, has a collidepoint() method that returns True if a point is included in the
+        # rectangle and False otherwise. Using these two methods, you can check if the bullet has left the screen,
+        # and if so, remove it from the list.
+
 
     def _draw(self):
         # draw a blue screen ->  self.screen.fill((0, 0, 255))
-
-        #.blit This method takes two arguments:
+        # .blit This method takes two arguments:
         # 1- The surface that you want to draw
         # 2- The point where you want to draw it
         # x and y coordinates start at the top left corner of the window
