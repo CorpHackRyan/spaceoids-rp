@@ -2,5 +2,6 @@ This was created from taking ideas from the tutorial at. I modified the code hea
 
 https://realpython.com/asteroids-game-python
 
-The working product!!
+<br>
+The working product!!<br>
 <img src="./screens.jpg">
